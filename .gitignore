@@ -3,3 +3,5 @@ obj
 Migrations
 .idea
 jobs.db
+/jobs.db-shm
+/jobs.db-wal
