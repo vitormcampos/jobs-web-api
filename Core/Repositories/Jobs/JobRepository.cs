@@ -29,7 +29,7 @@ public class JobRepository : IJobRepository
             );
     }
 
-    public IEnumerable<Job> FindAll()
+    public ICollection<Job> FindAll()
     {
         return _jobsContext.Jobs.AsNoTracking().ToList();
     }

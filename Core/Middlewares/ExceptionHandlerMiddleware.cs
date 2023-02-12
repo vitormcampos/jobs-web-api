@@ -38,7 +38,7 @@ public class ExceptionHandlerMiddleware
 
     private Task HandleModelExceptionAsync(HttpContext context, RecordNotFoudException exception)
     {
-        var response = new ErrorResponse
+        var response = new ErrorResponseDto
         {
             Cause = exception.GetType().Name,
             Message = exception.Message,
@@ -54,7 +54,7 @@ public class ExceptionHandlerMiddleware
 
     private Task HandleValidationExceptionAsync(HttpContext context, ValidationException exception)
     {
-        var response = new ValidationErrorResponse
+        var response = new ValidationErrorResponseDto
         {
             Cause = exception.GetType().Name,
             Message = exception.Message,

@@ -1,6 +1,6 @@
 namespace Jobs.Api.Common.Dto;
 
-public class ErrorResponse
+public class ErrorResponseDto
 {
     public int Status { get; set; }
     public string Error { get; set; } = String.Empty;

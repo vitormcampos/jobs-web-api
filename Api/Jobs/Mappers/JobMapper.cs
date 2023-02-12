@@ -14,12 +14,33 @@ public class JobMapper : Profile
                 opt =>
                     opt.MapFrom(
                         source =>
-                            string.Join(";", source.Requirements
-                            )
+                            string.Join(";", source.Requirements)
                     )
             );
 
         CreateMap<Job, JobResponseDto>()
+            .ForMember(
+                dest => dest.Requirements,
+                opt =>
+                    opt.MapFrom(
+                        source =>
+                            source.Requirements
+                                .Split(";", StringSplitOptions.None)
+                                .ToList()
+                    )
+            );
+
+        CreateMap<JobDetailResponseDto, Job>()
+            .ForMember(
+                dest => dest.Requirements,
+                opt =>
+                    opt.MapFrom(
+                        source =>
+                            string.Join(";", source.Requirements)
+                    )
+            );
+
+        CreateMap<Job, JobDetailResponseDto>()
             .ForMember(
                 dest => dest.Requirements,
                 opt =>

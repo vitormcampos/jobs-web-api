@@ -1,3 +1,4 @@
+using Jobs.Api.Common.LinkAssembler;
 using Jobs.Api.Jobs.Dtos;
 using Jobs.Api.Jobs.Services;
 using Jobs.Core.Models;
@@ -10,38 +11,49 @@ namespace Jobs.Api.Jobs.Controllers;
 public class JobController : ControllerBase
 {
     private readonly IJobService _jobService;
+    private readonly ILinkAssembler<JobDetailResponseDto> _jobDetailLinkAssembler;
+    private readonly ILinkAssembler<JobResponseDto> _jobSummaryLinkAssembler;
 
-    public JobController(IJobService jobService)
+    public JobController(
+        IJobService jobService,
+        ILinkAssembler<JobDetailResponseDto> jobDetailLinkAssembler,
+        ILinkAssembler<JobResponseDto> jobSummaryLinkAssembler
+    )
     {
         _jobService = jobService;
+        _jobDetailLinkAssembler = jobDetailLinkAssembler;
+        _jobSummaryLinkAssembler = jobSummaryLinkAssembler;
     }
 
     [HttpGet]
     public IActionResult FindAll()
     {
-        return Ok(_jobService.FindAll());
+        var jobs = _jobService.FindAll();
+        return Ok(_jobSummaryLinkAssembler.ToResourceList(jobs, HttpContext));
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id}", Name = "FindJobById")]
     public IActionResult FindById([FromRoute] int id)
     {
-        return Ok(_jobService.FindById(id));
+        var job = _jobService.FindById(id);
+        return Ok(_jobDetailLinkAssembler.ToResource(job, HttpContext));
     }
 
     [HttpPost]
     public IActionResult Create([FromBody] JobRequestDto job)
     {
         var newJob = _jobService.Create(job);
-        return CreatedAtAction(nameof(FindById), new { Id = newJob.Id }, newJob);
+        return Ok(_jobDetailLinkAssembler.ToResource(newJob, HttpContext));
     }
-    
-    [HttpPut("{id}")]
+
+    [HttpPut("{id}", Name = "UpdateJobById")]
     public IActionResult Update([FromRoute] int id, [FromBody] JobRequestDto job)
     {
-        return Ok(_jobService.UpdateById(id, job));
+        var updatedJob = _jobService.UpdateById(id, job);
+        return Ok(_jobDetailLinkAssembler.ToResource(updatedJob, HttpContext));
     }
-    
-    [HttpDelete("{id}")]
+
+    [HttpDelete("{id}", Name = "DeleteJobById")]
     public IActionResult Delete([FromRoute] int id)
     {
         _jobService.DeleteById(id);

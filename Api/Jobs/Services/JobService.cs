@@ -24,30 +24,33 @@ public class JobService : IJobService
         _jobRequestValidator = jobRequestValidator;
     }
 
-    public IEnumerable<Job> FindAll()
+    public ICollection<JobResponseDto> FindAll()
     {
-        return _jobRepository.FindAll();
+        var jobs = _jobRepository.FindAll();
+        var jobsDto = _mapper.Map<ICollection<JobResponseDto>>(jobs);
+        return jobsDto;
     }
 
-    public Job FindById(int id)
+    public JobDetailResponseDto FindById(int id)
     {
         var job = _jobRepository.FindById(id);
         if (job is null)
         {
             throw new RecordNotFoudException();
         }
-
-        return job;
+        
+        return _mapper.Map<JobDetailResponseDto>(job);
     }
 
-    public Job Create(JobRequestDto jobRequest)
+    public JobDetailResponseDto Create(JobRequestDto jobRequest)
     {
         _jobRequestValidator.ValidateAndThrow(jobRequest);
         var job = _mapper.Map<Job>(jobRequest);
-        return _jobRepository.Create(job);
+        var data = _jobRepository.Create(job);
+        return _mapper.Map<JobDetailResponseDto>(data);
     }
 
-    public Job UpdateById(int id, JobRequestDto jobRequest)
+    public JobDetailResponseDto UpdateById(int id, JobRequestDto jobRequest)
     {
         _jobRequestValidator.ValidateAndThrow(jobRequest);
         
@@ -55,7 +58,8 @@ public class JobService : IJobService
         var jobExists = _jobRepository.ExistsById(id);
         if (!jobExists) throw new RecordNotFoudException();
         job.Id = id;
-        return _jobRepository.Update(job);
+        var data = _jobRepository.Update(job);
+        return _mapper.Map<JobDetailResponseDto>(data);
     }
 
     public void DeleteById(int id)

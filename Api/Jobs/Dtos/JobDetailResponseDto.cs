@@ -1,6 +1,8 @@
+using Jobs.Api.Common.Dto;
+
 namespace Jobs.Api.Jobs.Dtos;
 
-public class JobDetailResponseDto
+public class JobDetailResponseDto : ResourceResponseDto
 {
     public int Id { get; set; }
     public string Title { get; set; } = string.Empty;
