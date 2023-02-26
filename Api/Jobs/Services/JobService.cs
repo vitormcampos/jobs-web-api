@@ -1,8 +1,10 @@
 using AutoMapper;
 using FluentValidation;
+using Jobs.Api.Common.Dto;
 using Jobs.Api.Jobs.Dtos;
 using Jobs.Core.Exceptions;
 using Jobs.Core.Models;
+using Jobs.Core.Repositories;
 using Jobs.Core.Repositories.Jobs;
 
 namespace Jobs.Api.Jobs.Services;
@@ -31,6 +33,13 @@ public class JobService : IJobService
         return jobsDto;
     }
 
+    public PagedResponse<JobResponseDto> FindAll(int page, int size)
+    {
+        var paginationOptions = new PaginationOptions(page, size);
+        var data = _jobRepository.FindAll(paginationOptions);
+        return _mapper.Map<PagedResponse<JobResponseDto>>(data);
+    }
+
     public JobDetailResponseDto FindById(int id)
     {
         var job = _jobRepository.FindById(id);
@@ -38,7 +47,7 @@ public class JobService : IJobService
         {
             throw new RecordNotFoudException();
         }
-        
+
         return _mapper.Map<JobDetailResponseDto>(job);
     }
 
@@ -53,7 +62,7 @@ public class JobService : IJobService
     public JobDetailResponseDto UpdateById(int id, JobRequestDto jobRequest)
     {
         _jobRequestValidator.ValidateAndThrow(jobRequest);
-        
+
         var job = _mapper.Map<Job>(jobRequest);
         var jobExists = _jobRepository.ExistsById(id);
         if (!jobExists) throw new RecordNotFoudException();

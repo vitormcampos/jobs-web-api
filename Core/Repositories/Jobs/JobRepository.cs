@@ -1,3 +1,4 @@
+using Jobs.Api.Common.Dto;
 using Jobs.Core.Data.Context;
 using Jobs.Core.Models;
 using Microsoft.EntityFrameworkCore;
@@ -60,5 +61,21 @@ public class JobRepository : IJobRepository
             _jobsContext.Jobs.Remove(job);
             _jobsContext.SaveChanges();
         }
+    }
+
+    public PagedResult<Job> FindAll(PaginationOptions options)
+    {
+        var totalElements = _jobsContext.Jobs.Count();
+        var items = _jobsContext.Jobs
+            .Skip(options.PageNumber - 1 * options.PageSize)
+            .Take(options.PageSize)
+            .ToList();
+
+        return new PagedResult<Job>(
+            items,
+            options.PageNumber,
+            options.PageSize,
+            totalElements
+        );
     }
 }

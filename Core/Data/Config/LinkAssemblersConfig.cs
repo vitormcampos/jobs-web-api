@@ -10,5 +10,6 @@ public static class LinkAssemblersConfig
     {
         services.AddScoped<ILinkAssembler<JobDetailResponseDto>, JobDetailLinkAssembler>();
         services.AddScoped<ILinkAssembler<JobResponseDto>, JobSummaryLinkAssembler>();
+        services.AddScoped<IPagedAssembler<JobResponseDto>, JobSummaryPagedLinkAssembler>();
     }
 }

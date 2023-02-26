@@ -1,6 +1,8 @@
 using AutoMapper;
+using Jobs.Api.Common.Dto;
 using Jobs.Api.Jobs.Dtos;
 using Jobs.Core.Models;
+using Jobs.Core.Repositories;
 
 namespace Jobs.Api.Jobs.Mappers;
 
@@ -51,5 +53,8 @@ public class JobMapper : Profile
                                 .ToList()
                     )
             );
+        
+        CreateMap<PagedResponse<JobResponseDto>, PagedResult<Job>>()
+            .ReverseMap();
     }
 }

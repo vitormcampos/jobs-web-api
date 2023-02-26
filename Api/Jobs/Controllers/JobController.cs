@@ -2,6 +2,7 @@ using Jobs.Api.Common.LinkAssembler;
 using Jobs.Api.Jobs.Dtos;
 using Jobs.Api.Jobs.Services;
 using Jobs.Core.Models;
+using Jobs.Core.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Jobs.Api.Jobs.Controllers;
@@ -12,24 +13,22 @@ public class JobController : ControllerBase
 {
     private readonly IJobService _jobService;
     private readonly ILinkAssembler<JobDetailResponseDto> _jobDetailLinkAssembler;
-    private readonly ILinkAssembler<JobResponseDto> _jobSummaryLinkAssembler;
+    private readonly IPagedAssembler<JobResponseDto> _jobPagedAssembler;
 
     public JobController(
         IJobService jobService,
-        ILinkAssembler<JobDetailResponseDto> jobDetailLinkAssembler,
-        ILinkAssembler<JobResponseDto> jobSummaryLinkAssembler
-    )
+        ILinkAssembler<JobDetailResponseDto> jobDetailLinkAssembler, IPagedAssembler<JobResponseDto> jobPagedAssembler)
     {
         _jobService = jobService;
         _jobDetailLinkAssembler = jobDetailLinkAssembler;
-        _jobSummaryLinkAssembler = jobSummaryLinkAssembler;
+        _jobPagedAssembler = jobPagedAssembler;
     }
 
-    [HttpGet]
-    public IActionResult FindAll()
+    [HttpGet(Name = "FindAllJobs")]
+    public IActionResult FindAll([FromQuery] int page = 1, [FromQuery] int size = 10)
     {
-        var jobs = _jobService.FindAll();
-        return Ok(_jobSummaryLinkAssembler.ToResourceList(jobs, HttpContext));
+        var body = _jobService.FindAll(page, size);
+        return Ok(_jobPagedAssembler.ToPagedResource(body, HttpContext));
     }
 
     [HttpGet("{id}", Name = "FindJobById")]
