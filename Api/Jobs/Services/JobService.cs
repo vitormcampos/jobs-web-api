@@ -26,9 +26,9 @@ public class JobService : IJobService
         _jobRequestValidator = jobRequestValidator;
     }
 
-    public ICollection<JobResponseDto> FindAll()
+    public async Task<ICollection<JobResponseDto>> FindAll()
     {
-        var jobs = _jobRepository.FindAll();
+        var jobs = await _jobRepository.FindAll();
         var jobsDto = _mapper.Map<ICollection<JobResponseDto>>(jobs);
         return jobsDto;
     }
@@ -40,9 +40,9 @@ public class JobService : IJobService
         return _mapper.Map<PagedResponse<JobResponseDto>>(data);
     }
 
-    public JobDetailResponseDto FindById(int id)
+    public async Task<JobDetailResponseDto> FindById(int id)
     {
-        var job = _jobRepository.FindById(id);
+        var job = await _jobRepository.FindById(id);
         if (job is null)
         {
             throw new RecordNotFoudException();
@@ -51,31 +51,31 @@ public class JobService : IJobService
         return _mapper.Map<JobDetailResponseDto>(job);
     }
 
-    public JobDetailResponseDto Create(JobRequestDto jobRequest)
+    public async Task<JobDetailResponseDto> Create(JobRequestDto jobRequest)
     {
         _jobRequestValidator.ValidateAndThrow(jobRequest);
         var job = _mapper.Map<Job>(jobRequest);
-        var data = _jobRepository.Create(job);
+        var data = await _jobRepository.Create(job);
         return _mapper.Map<JobDetailResponseDto>(data);
     }
 
-    public JobDetailResponseDto UpdateById(int id, JobRequestDto jobRequest)
+    public async Task<JobDetailResponseDto> UpdateById(int id, JobRequestDto jobRequest)
     {
         _jobRequestValidator.ValidateAndThrow(jobRequest);
 
         var job = _mapper.Map<Job>(jobRequest);
-        var jobExists = _jobRepository.ExistsById(id);
+        var jobExists = await _jobRepository.ExistsById(id);
         if (!jobExists) throw new RecordNotFoudException();
         job.Id = id;
         var data = _jobRepository.Update(job);
         return _mapper.Map<JobDetailResponseDto>(data);
     }
 
-    public void DeleteById(int id)
+    public async Task DeleteById(int id)
     {
-        var jobExists = _jobRepository.ExistsById(id);
+        var jobExists = await _jobRepository.ExistsById(id);
         if (!jobExists) throw new RecordNotFoudException();
 
-        _jobRepository.DeleteById(id);
+        await _jobRepository.DeleteById(id);
     }
 }

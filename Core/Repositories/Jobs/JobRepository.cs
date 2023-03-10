@@ -1,6 +1,7 @@
 using Jobs.Api.Common.Dto;
 using Jobs.Core.Data.Context;
 using Jobs.Core.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Jobs.Core.Repositories.Jobs;
@@ -14,46 +15,46 @@ public class JobRepository : IJobRepository
         _jobsContext = jobsContext;
     }
 
-    public bool ExistsById(int id)
+    public async Task<bool> ExistsById(int id)
     {
-        return _jobsContext.Jobs
+        return await _jobsContext.Jobs
             .AsNoTracking()
-            .Any(j => j.Id == id);
+            .AnyAsync(j => j.Id == id);
     }
 
-    public Job? FindById(int id)
+    public async Task<Job?> FindById(int id)
     {
-        return _jobsContext.Jobs
+        return await _jobsContext.Jobs
             .AsNoTracking()
-            .FirstOrDefault(j =>
+            .FirstOrDefaultAsync(j =>
                 j.Id == id
             );
     }
 
-    public ICollection<Job> FindAll()
+    public async Task<ICollection<Job>> FindAll()
     {
-        return _jobsContext.Jobs.AsNoTracking().ToList();
+        return await _jobsContext.Jobs.AsNoTracking().ToListAsync();
     }
 
-    public Job Create(Job model)
+    public async Task<Job> Create(Job model)
     {
-        _jobsContext.Jobs.Add(model);
-        _jobsContext.SaveChanges();
+        await _jobsContext.Jobs.AddAsync(model);
+        await _jobsContext.SaveChangesAsync();
         return model;
     }
 
-    public Job Update(Job model)
+    public Task<Job> Update(Job model)
     {
         _jobsContext.Jobs.Update(model);
         _jobsContext.SaveChanges();
-        return model;
+        return Task.FromResult(model);
     }
 
-    public void DeleteById(int id)
+    public async Task DeleteById(int id)
     {
-        var job = _jobsContext.Jobs
+        var job = await _jobsContext.Jobs
             .AsNoTracking()
-            .FirstOrDefault(j =>
+            .FirstOrDefaultAsync(j =>
                 j.Id == id
             );
         if (job is not null)

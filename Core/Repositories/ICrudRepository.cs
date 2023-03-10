@@ -1,11 +1,13 @@
+using Microsoft.AspNetCore.Identity;
+
 namespace Jobs.Core.Repositories;
 
 public interface ICrudRepository<Model, Id>
 {
-    bool ExistsById(Id id);
-    Model? FindById(Id id);
-    ICollection<Model> FindAll();
-    Model Create(Model model);
-    Model Update(Model model);
-    void DeleteById(Id id);
+    Task<bool> ExistsById(Id id);
+    Task<Model?> FindById(Id id);
+    Task<ICollection<Model>> FindAll();
+    Task<Model> Create(Model model);
+    Task<Model> Update(Model model);
+    Task DeleteById(Id id);
 }

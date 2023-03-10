@@ -7,10 +7,10 @@ namespace Jobs.Api.Jobs.Services;
 
 public interface IJobService
 {
-    ICollection<JobResponseDto> FindAll();
+    Task<ICollection<JobResponseDto>> FindAll();
     PagedResponse<JobResponseDto> FindAll(int page, int size);
-    JobDetailResponseDto FindById(int id);
-    JobDetailResponseDto Create(JobRequestDto job);
-    JobDetailResponseDto UpdateById(int id, JobRequestDto job);
-    void DeleteById(int id);
+    Task<JobDetailResponseDto> FindById(int id);
+    Task<JobDetailResponseDto> Create(JobRequestDto job);
+    Task<JobDetailResponseDto> UpdateById(int id, JobRequestDto job);
+    Task DeleteById(int id);
 }

@@ -37,18 +37,18 @@ public class JobController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(JobDetailResponseDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponseDto))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorResponseDto))]
-    public IActionResult FindById([FromRoute] int id)
+    public async Task<IActionResult> FindById([FromRoute] int id)
     {
-        var job = _jobService.FindById(id);
+        var job = await _jobService.FindById(id);
         return Ok(_jobDetailLinkAssembler.ToResource(job, HttpContext));
     }
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(JobDetailResponseDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationErrorResponseDto))]
-    public IActionResult Create([FromBody] JobRequestDto job)
+    public async Task<IActionResult> Create([FromBody] JobRequestDto job)
     {
-        var newJob = _jobService.Create(job);
+        var newJob = await _jobService.Create(job);
         return Ok(_jobDetailLinkAssembler.ToResource(newJob, HttpContext));
     }
 
@@ -56,9 +56,9 @@ public class JobController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(JobDetailResponseDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationErrorResponseDto))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorResponseDto))]
-    public IActionResult Update([FromRoute] int id, [FromBody] JobRequestDto job)
+    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] JobRequestDto job)
     {
-        var updatedJob = _jobService.UpdateById(id, job);
+        var updatedJob = await _jobService.UpdateById(id, job);
         return Ok(_jobDetailLinkAssembler.ToResource(updatedJob, HttpContext));
     }
 
